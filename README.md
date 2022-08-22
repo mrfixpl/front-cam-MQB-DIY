@@ -9,8 +9,11 @@ Adding Front Camera functionality to the vehicle, using universal 3rd party came
 * Fitted and working RVC-High camera (RVC-Low camera video feed is switched of as soon as reverse gear is disenagaged, when RVC-High image is visible while moving forward with low speed).
 
 ## Parts
-* Arduino board
-* Relay
+* Front camera in NTSC system
+* * Option 1: https://s.click.aliexpress.com/e/_DkfmwDZ (not tested yet)
+* * Option 2: https://s.click.aliexpress.com/e/_DFbM4L5
+* ATTiny board - https://www.aliexpress.com/item/1005001621891306.html
+* Relay: https://s.click.aliexpress.com/e/_Ddmhov9
 
 ## Software
 * Arduino IDE
