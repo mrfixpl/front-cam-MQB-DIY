@@ -42,8 +42,9 @@ void loop() {
   checkPinStates(); // check
 
   handleFrontCamButton();
-  handleFrontCamRelay();
-  handleFrontCamIndicator();
+  
+  updateFrontCamRelayPin();
+  updateFrontCamIndicatorPin();
 }
 
 void setInitialStates() {
@@ -63,14 +64,7 @@ void handleFrontCamButton() {
   {
     if(frontCamButtonState == frontCamButtonEvent)
     {
-      if (frontCamRelayState == LOW)
-      {
-        frontCamOn();
-      }
-      else
-      {
-        frontCamOff();
-      }
+      frontCamRelayState ? frontCamOff() : frontCamOn();
     }
     frontCamButtonStateOld = frontCamButtonState;
   }
@@ -88,10 +82,10 @@ void frontCamOff() {
   frontCamRelayState = LOW;
 }
 
-void handleFrontCamRelay() {
+void updateFrontCamRelayPin() {
   digitalWrite(frontCamRelayPin, frontCamRelayState);
 }
 
-void handleFrontCamIndicator() {
+void updateFrontCamIndicatorPin() {
   digitalWrite(frontCamIndicatorPin, frontCamIndicatorState);
 }
