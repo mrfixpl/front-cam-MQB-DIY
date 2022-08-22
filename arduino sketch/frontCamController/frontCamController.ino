@@ -13,6 +13,9 @@
  */
 
 /* constants */
+#include <Arduino.h>
+#include <OneButton.h>
+
 const int frontCamButtonPin = 2; // custom button to trigger Front Camera
 const int frontCamIndicatorPin = 3; // custom indicator to show state of relay
 const int frontCamRelayPin = 4; // relay to control video feed

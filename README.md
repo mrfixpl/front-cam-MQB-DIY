@@ -17,10 +17,16 @@ Adding Front Camera functionality to the vehicle, using universal 3rd party came
 * Wires, shrinking tubes, etc...
 
 ## Software
-* Arduino IDE
+* Arduino IDE - https://www.arduino.cc
+* OneButton library - https://github.com/mathertel/OneButton
 
 ## Installation
-TODO
+* Tapping into OEM buttons signals
+* Enabling empty button
+* Tapping into reverse gear signal
+* Installing FrontCam
+* Modifying OEM wiring by adding video feed switching relay
+* Powering the controller with term_15
 
 ## Changelog
 ### `v0.1`
@@ -34,5 +40,6 @@ TODO
 ## Future Concept
 * Implement OneButton library: https://github.com/mathertel/OneButton
 
-## Reference
-*
+## Reference and credits
+* https://github.com/mathertel/OneButton
+* https://www.golfmk7.com/forums/index.php?threads/diy-front-camera-upgrade-for-rvc-high.405296/
