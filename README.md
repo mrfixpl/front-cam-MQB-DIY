@@ -25,6 +25,11 @@ TODO
 ## Changelog
 ### `v0.1`
 * initial release, not even tested in vehicle
+* toggle button to switch between FrontCam and RVC
+* automatic switching to front cam when reverse gear is disengaged
+
+### `v0.2`
+* memory of the FrontCam being switched of my user, reset after turning parktronic off.
 
 ## Future Concept
 * Implement OneButton library: https://github.com/mathertel/OneButton
