@@ -28,6 +28,7 @@ boolean frontCamIndicatorState = LOW;
 boolean frontCamRelayState = LOW;
 boolean parktronicState = LOW;
 boolean reverseSignalState = LOW;
+boolean frontCamOffByUser = LOW;
 
 /* settings */
 const boolean frontCamButtonEvent = LOW; // LOW for "on press", HIGH for "on release"
@@ -57,6 +58,7 @@ void loop() {
   handleFrontCamButton();
   handleAutomaticFrontCamTrigger();
   handleForceParektronicOn();
+  handleFrontCamOffByUser();
   
   updateFrontCamRelayPin();
   updateFrontCamIndicatorPin();
@@ -79,7 +81,15 @@ void handleFrontCamButton() {
   {
     if(frontCamButtonState == frontCamButtonEvent)
     {
-      frontCamState ? frontCamOff() : frontCamOn();
+      if (frontCamButtonState == LOW)
+      {
+        frontCamOn();
+      }
+      else
+      {
+        frontCamOffByUser = HIGH;
+        frontCamOff();
+      }
     }
     frontCamButtonStateOld = frontCamButtonState;
   }
@@ -87,7 +97,7 @@ void handleFrontCamButton() {
 
 void handleAutomaticFrontCamTrigger() {
   //if parktronic indicator is on and reverse gear is off, turn on front camera
-  if(parktronicState == HIGH && reverseSignalState == LOW && frontCamState == LOW) {
+  if(parktronicState == HIGH && reverseSignalState == LOW && frontCamState == LOW && frontCamOffByUser == LOW) {
     frontCamOn();
   }
   if(parktronicState == HIGH && reverseSignalState == HIGH && frontCamState == HIGH) {
@@ -113,6 +123,12 @@ void handleForceParektronicOn() {
     digitalWrite(parktronicButtonPin, HIGH);
     delay(parktronicButtonPressDuration);
     digitalWrite(parktronicButtonPin, LOW);
+  }
+}
+
+void handleFrontCamOffByUser() {
+  if(frontCamOffByUser == HIGH && parktronicState == LOW) {
+    frontCamOffByUser == LOW;
   }
 }
 
