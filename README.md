@@ -14,9 +14,20 @@ Adding Front Camera functionality to the vehicle, using universal 3rd party came
 * * Option 2: https://s.click.aliexpress.com/e/_DFbM4L5
 * ATTiny board - https://www.aliexpress.com/item/1005001621891306.html
 * Relay: https://s.click.aliexpress.com/e/_Ddmhov9
+* Wires, shrinking tubes, etc...
 
 ## Software
 * Arduino IDE
 
 ## Installation
 TODO
+
+## Changelog
+### `v0.1`
+* initial release, not even tested in vehicle
+
+## Future Concept
+* Implement OneButton library: https://github.com/mathertel/OneButton
+
+## Reference
+*
