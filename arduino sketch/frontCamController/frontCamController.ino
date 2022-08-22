@@ -1,3 +1,9 @@
+/* Front Camera Controller for MQB Golf MK7 v0.1 by mr-fix
+ * Requires RVC-High to be installed and working in the vehicle
+ * https://github.com/mrfixpl/front-cam-MQB-DIY
+ * NOT FOR COMMERCIAL USE
+ */
+
 // constants
 const int frontCamButtonPin = 2; // custom button to trigger Front Camera
 const int frontCamIndicatorPin = 4; // custom indicator to show state of relay
@@ -6,10 +12,16 @@ const int parktronicButtonPin = 3; // OEM Parktronic button
 const int parktronicIndicatorPin = 5; // OEM Parktronic indicator
 const int reverseSignalPin = 6; //reverse gear engaged signal
 
+const boolean frontCamButtonEvent = LOW; // LOW for "on press", HIGH for "on release"
+
 // variables
-int frontCamButtonState = 0;
-int parktronicIndicatorState = 0;
-int reverseSignalState = 0;
+boolean frontCamButtonState = LOW;
+boolean frontCamButtonStateOld = LOW;
+boolean frontCamIndicatorState = LOW;
+boolean frontCamRelayState = LOW;
+boolean parktronicIndicatorState = LOW;
+boolean reverseSignalState = LOW;
+
 
 void setup() {
   // outputs
@@ -29,12 +41,9 @@ void setup() {
 void loop() {
   checkPinStates(); // check
 
-  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (frontCamButtonState == HIGH) {
-    digitalWrite(LED_BUILTIN, LOW);
-  } else {
-    digitalWrite(LED_BUILTIN, HIGH);
-  }
+  handleFrontCamButton();
+  handleFrontCamRelay();
+  handleFrontCamIndicator();
 }
 
 void setInitialStates() {
@@ -47,4 +56,42 @@ void checkPinStates() {
   frontCamButtonState = digitalRead(frontCamButtonPin);
   parktronicIndicatorState = digitalRead(parktronicIndicatorPin);
   reverseSignalState = digitalRead(reverseSignalPin);
+}
+
+void handleFrontCamButton() {
+  if(frontCamButtonState != frontCamButtonStateOld)
+  {
+    if(frontCamButtonState == frontCamButtonEvent)
+    {
+      if (frontCamRelayState == LOW)
+      {
+        frontCamOn();
+      }
+      else
+      {
+        frontCamOff();
+      }
+    }
+    frontCamButtonStateOld = frontCamButtonState;
+  }
+}
+
+void frontCamOn() {
+   digitalWrite(LED_BUILTIN, HIGH);
+   frontCamIndicatorState = HIGH;
+   frontCamRelayState = HIGH;
+}
+
+void frontCamOff() {
+  digitalWrite(LED_BUILTIN, LOW);
+  frontCamIndicatorState = LOW;
+  frontCamRelayState = LOW;
+}
+
+void handleFrontCamRelay() {
+  digitalWrite(frontCamRelayPin, frontCamRelayState);
+}
+
+void handleFrontCamIndicator() {
+  digitalWrite(frontCamIndicatorPin, frontCamIndicatorState);
 }
