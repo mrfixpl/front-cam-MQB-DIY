@@ -8,13 +8,14 @@
 const int frontCamButtonPin = 2; // custom button to trigger Front Camera
 const int frontCamIndicatorPin = 4; // custom indicator to show state of relay
 const int frontCamRelayPin = 7; // relay to control video feed
-const int parktronicButtonPin = 3; // OEM Parktronic button
+const int parktronicButtonPin = 3; // OEM Parktronic button - planning to use this as output to trigger parktronic system, when front cam button is pressed
 const int parktronicIndicatorPin = 5; // OEM Parktronic indicator
 const int reverseSignalPin = 6; //reverse gear engaged signal
 
 const boolean frontCamButtonEvent = LOW; // LOW for "on press", HIGH for "on release"
 
 // variables
+boolean frontCamState = LOW;
 boolean frontCamButtonState = LOW;
 boolean frontCamButtonStateOld = LOW;
 boolean frontCamIndicatorState = LOW;
@@ -25,10 +26,10 @@ boolean reverseSignalState = LOW;
 
 void setup() {
   // outputs
-  pinMode(LED_BUILTIN, OUTPUT);
   pinMode(frontCamIndicatorPin, OUTPUT);
   pinMode(frontCamRelayPin, OUTPUT);
   pinMode(parktronicButtonPin, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT); //for developer purposes
   
   // inputs
   pinMode(frontCamButtonPin, INPUT_PULLUP);
@@ -39,13 +40,19 @@ void setup() {
 }
 
 void loop() {
-  checkPinStates(); // check
+  checkInputPinStates();
 
   handleFrontCamButton();
+  handleAutomaticFrontCamTrigger();
   
   updateFrontCamRelayPin();
   updateFrontCamIndicatorPin();
 }
+
+
+
+
+
 
 void setInitialStates() {
   digitalWrite(frontCamIndicatorPin, LOW);
@@ -53,7 +60,7 @@ void setInitialStates() {
   digitalWrite(parktronicButtonPin, LOW);
 }
 
-void checkPinStates() {
+void checkInputPinStates() {
   frontCamButtonState = digitalRead(frontCamButtonPin);
   parktronicIndicatorState = digitalRead(parktronicIndicatorPin);
   reverseSignalState = digitalRead(reverseSignalPin);
@@ -64,23 +71,36 @@ void handleFrontCamButton() {
   {
     if(frontCamButtonState == frontCamButtonEvent)
     {
-      frontCamRelayState ? frontCamOff() : frontCamOn();
+      frontCamState ? frontCamOff() : frontCamOn();
     }
     frontCamButtonStateOld = frontCamButtonState;
   }
 }
 
+void handleAutomaticFrontCamTrigger() {
+  //if parktronic indicator is on and reverse gear is off, turn on front camera
+  if(parktronicIndicatorState == HIGH && reverseSignalState == LOW && frontCamState == LOW) {
+    frontCamOn();
+  }
+  if(parktronicIndicatorState == HIGH && reverseSignalState == HIGH && frontCamState == HIGH)
+  frontCamOff();
+}
+
+
 void frontCamOn() {
-   digitalWrite(LED_BUILTIN, HIGH);
+   frontCamState = HIGH;
    frontCamIndicatorState = HIGH;
    frontCamRelayState = HIGH;
 }
 
 void frontCamOff() {
-  digitalWrite(LED_BUILTIN, LOW);
+  frontCamState = LOW;
   frontCamIndicatorState = LOW;
   frontCamRelayState = LOW;
 }
+
+
+
 
 void updateFrontCamRelayPin() {
   digitalWrite(frontCamRelayPin, frontCamRelayState);
@@ -88,4 +108,5 @@ void updateFrontCamRelayPin() {
 
 void updateFrontCamIndicatorPin() {
   digitalWrite(frontCamIndicatorPin, frontCamIndicatorState);
+  digitalWrite(LED_BUILTIN, frontCamIndicatorState);
 }
