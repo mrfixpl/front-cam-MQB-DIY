@@ -4,8 +4,13 @@
  * NOT FOR COMMERCIAL USE
  * 
  * Good luck!
+ * 
+ * Might be cool to use WS2812 as the indicator and dynamicly control the color of the button.
+ * not sure what's the actual function RGB light here, but still would be cool
+ * 
+ * Need to thing about the parktronic system being triggered when driving forward slowly and approaching obsticle. this turns on sensors display, but not the camera
+ * 
  */
-
 
 /* constants */
 const int frontCamButtonPin = 2; // custom button to trigger Front Camera
