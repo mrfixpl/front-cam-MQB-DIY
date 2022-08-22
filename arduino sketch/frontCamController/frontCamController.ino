@@ -6,7 +6,8 @@
  * Good luck!
  */
 
-// constants
+
+/* constants */
 const int frontCamButtonPin = 2; // custom button to trigger Front Camera
 const int frontCamIndicatorPin = 3; // custom indicator to show state of relay
 const int frontCamRelayPin = 4; // relay to control video feed
@@ -14,9 +15,7 @@ const int parktronicButtonPin = 5; // OEM Parktronic button - planning to use th
 const int parktronicIndicatorPin = 6; // OEM Parktronic indicator
 const int reverseSignalPin = 7; //reverse gear engaged signal
 
-const boolean frontCamButtonEvent = LOW; // LOW for "on press", HIGH for "on release"
-
-// variables
+/* variables */
 boolean frontCamState = LOW;
 boolean frontCamButtonState = LOW;
 boolean frontCamButtonStateOld = LOW;
@@ -25,6 +24,10 @@ boolean frontCamRelayState = LOW;
 boolean parktronicState = LOW;
 boolean reverseSignalState = LOW;
 
+/* settings */
+const boolean frontCamButtonEvent = LOW; // LOW for "on press", HIGH for "on release"
+const int parktronicButtonPressDuration = 100; //how long press the parktronic button to force start the system
+// TODO? frontCamIndicatorPin might need PWM control for brightness adjustment
 
 void setup() {
   // outputs
@@ -53,11 +56,6 @@ void loop() {
   updateFrontCamRelayPin();
   updateFrontCamIndicatorPin();
 }
-
-
-
-
-
 
 void setInitialStates() {
   digitalWrite(frontCamIndicatorPin, LOW);
@@ -91,7 +89,6 @@ void handleAutomaticFrontCamTrigger() {
   frontCamOff();
 }
 
-
 void frontCamOn() {
    frontCamState = HIGH;
    frontCamRelayState = HIGH;
@@ -108,7 +105,7 @@ void handleForceParektronicOn() {
   if(parktronicState == LOW && frontCamState == HIGH)
   {
     digitalWrite(parktronicButtonPin, HIGH);
-    delay(100);
+    delay(parktronicButtonPressDuration);
     digitalWrite(parktronicButtonPin, LOW);
   }
 }
