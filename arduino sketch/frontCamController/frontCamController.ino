@@ -85,8 +85,9 @@ void handleAutomaticFrontCamTrigger() {
   if(parktronicState == HIGH && reverseSignalState == LOW && frontCamState == LOW) {
     frontCamOn();
   }
-  if(parktronicState == HIGH && reverseSignalState == HIGH && frontCamState == HIGH)
-  frontCamOff();
+  if(parktronicState == HIGH && reverseSignalState == HIGH && frontCamState == HIGH) {
+    frontCamOff();
+  }
 }
 
 void frontCamOn() {
