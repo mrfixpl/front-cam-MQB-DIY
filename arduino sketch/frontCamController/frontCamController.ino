@@ -2,15 +2,17 @@
  * Requires RVC-High to be installed and working in the vehicle
  * https://github.com/mrfixpl/front-cam-MQB-DIY
  * NOT FOR COMMERCIAL USE
+ * 
+ * Good luck!
  */
 
 // constants
 const int frontCamButtonPin = 2; // custom button to trigger Front Camera
-const int frontCamIndicatorPin = 4; // custom indicator to show state of relay
-const int frontCamRelayPin = 7; // relay to control video feed
-const int parktronicButtonPin = 3; // OEM Parktronic button - planning to use this as output to trigger parktronic system, when front cam button is pressed
-const int parktronicIndicatorPin = 5; // OEM Parktronic indicator
-const int reverseSignalPin = 6; //reverse gear engaged signal
+const int frontCamIndicatorPin = 3; // custom indicator to show state of relay
+const int frontCamRelayPin = 4; // relay to control video feed
+const int parktronicButtonPin = 5; // OEM Parktronic button - planning to use this as output to trigger parktronic system, when front cam button is pressed but RVC is off
+const int parktronicIndicatorPin = 6; // OEM Parktronic indicator
+const int reverseSignalPin = 7; //reverse gear engaged signal
 
 const boolean frontCamButtonEvent = LOW; // LOW for "on press", HIGH for "on release"
 
@@ -20,7 +22,7 @@ boolean frontCamButtonState = LOW;
 boolean frontCamButtonStateOld = LOW;
 boolean frontCamIndicatorState = LOW;
 boolean frontCamRelayState = LOW;
-boolean parktronicIndicatorState = LOW;
+boolean parktronicState = LOW;
 boolean reverseSignalState = LOW;
 
 
@@ -29,12 +31,14 @@ void setup() {
   pinMode(frontCamIndicatorPin, OUTPUT);
   pinMode(frontCamRelayPin, OUTPUT);
   pinMode(parktronicButtonPin, OUTPUT);
-  pinMode(LED_BUILTIN, OUTPUT); //for developer purposes
   
   // inputs
   pinMode(frontCamButtonPin, INPUT_PULLUP);
   pinMode(parktronicIndicatorPin, INPUT);
   pinMode(reverseSignalPin, INPUT);
+
+  //for development purposes
+  pinMode(LED_BUILTIN, OUTPUT); 
 
   setInitialStates();
 }
@@ -44,6 +48,7 @@ void loop() {
 
   handleFrontCamButton();
   handleAutomaticFrontCamTrigger();
+  handleForceParektronicOn();
   
   updateFrontCamRelayPin();
   updateFrontCamIndicatorPin();
@@ -62,7 +67,7 @@ void setInitialStates() {
 
 void checkInputPinStates() {
   frontCamButtonState = digitalRead(frontCamButtonPin);
-  parktronicIndicatorState = digitalRead(parktronicIndicatorPin);
+  parktronicState = digitalRead(parktronicIndicatorPin);
   reverseSignalState = digitalRead(reverseSignalPin);
 }
 
@@ -79,18 +84,18 @@ void handleFrontCamButton() {
 
 void handleAutomaticFrontCamTrigger() {
   //if parktronic indicator is on and reverse gear is off, turn on front camera
-  if(parktronicIndicatorState == HIGH && reverseSignalState == LOW && frontCamState == LOW) {
+  if(parktronicState == HIGH && reverseSignalState == LOW && frontCamState == LOW) {
     frontCamOn();
   }
-  if(parktronicIndicatorState == HIGH && reverseSignalState == HIGH && frontCamState == HIGH)
+  if(parktronicState == HIGH && reverseSignalState == HIGH && frontCamState == HIGH)
   frontCamOff();
 }
 
 
 void frontCamOn() {
    frontCamState = HIGH;
-   frontCamIndicatorState = HIGH;
    frontCamRelayState = HIGH;
+   frontCamIndicatorState = HIGH;
 }
 
 void frontCamOff() {
@@ -99,8 +104,14 @@ void frontCamOff() {
   frontCamRelayState = LOW;
 }
 
-
-
+void handleForceParektronicOn() {
+  if(parktronicState == LOW && frontCamState == HIGH)
+  {
+    digitalWrite(parktronicButtonPin, HIGH);
+    delay(100);
+    digitalWrite(parktronicButtonPin, LOW);
+  }
+}
 
 void updateFrontCamRelayPin() {
   digitalWrite(frontCamRelayPin, frontCamRelayState);
