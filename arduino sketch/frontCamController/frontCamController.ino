@@ -2,14 +2,14 @@
  * Requires RVC-High to be installed and working in the vehicle
  * https://github.com/mrfixpl/front-cam-MQB-DIY
  * NOT FOR COMMERCIAL USE
- * 
+ *
  * https://github.com/mathertel/OneButton library was used. And the library is awesome!
- * 
+ *
  * Might be cool to use WS2812 as the indicator and dynamicly control the color of the button.
  * not sure what's the actual function RGB light here, but still would be cool
- * 
+ *
  * Need to thing about the parktronic system being triggered when driving forward slowly and approaching obsticle. this turns on sensors display, but not the camera
- * 
+ *
  */
 
 #include <Arduino.h>
@@ -44,13 +44,13 @@ void setup() {
   Serial.begin(115200);
   Serial.println("");
   Serial.println(softwareIdentification);
-  
+
   // outputs
   pinMode(frontCamIndicatorPin, OUTPUT);
   pinMode(frontCamRelayPin, OUTPUT);
   pinMode(parktronicButtonPin, OUTPUT);
   setInitialStates();
-  
+
   // inputs
   pinMode(parktronicIndicatorPin, INPUT);
   pinMode(reverseSignalPin, INPUT);
@@ -68,7 +68,7 @@ void loop() {
   handleFrontCamRequest();
   handleAutomaticFrontCamTrigger();
   handleFrontCamOffByUser();
-  
+
   updateFrontCamRelayPin();
   updateFrontCamIndicatorPin();
 }
@@ -104,7 +104,7 @@ void handleFrontCamRequest() {
 }
 
 void handleAutomaticFrontCamTrigger() {
-  //if camear is off, parktronic indicator is on, reverse gear is off, user did not force turned it off
+  //if camera is off, parktronic indicator is on, reverse gear is off, user did not force turned it off
   if(parktronicState == HIGH && reverseSignalState == LOW && frontCamState == LOW && frontCamOffByUser == LOW) {
     Serial.println("handleAutomaticFrontCamTrigger(): ON request");
     frontCamOn();
@@ -138,9 +138,9 @@ void forceParktronicOn() {
     delay(parktronicButtonPressDuration);
     digitalWrite(parktronicButtonPin, LOW);
   }
-  
+
   checkInputPinStates();
-  
+
   if(parktronicState == HIGH) {
     Serial.println("forceParktronicOn(): Parktronic ON successfully");
   }
