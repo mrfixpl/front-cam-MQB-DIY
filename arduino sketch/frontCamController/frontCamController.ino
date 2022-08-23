@@ -67,7 +67,6 @@ void loop() {
 
   handleFrontCamRequest();
   handleAutomaticFrontCamTrigger();
-  handleForceParktronicOn();
   handleFrontCamOffByUser();
   
   updateFrontCamRelayPin();
@@ -91,13 +90,13 @@ void handleFrontCamRequest() {
   {
     if(frontCamRequest == HIGH)
     {
-      Serial.println("FrontCam button: FrontCam ON request");
+      Serial.println("handleFrontCamRequest(): ON request");
       frontCamOffByUser = LOW;
       frontCamOn();
     }
     else
     {
-      Serial.println("FrontCam button: FrontCam OFF request");
+      Serial.println("handleFrontCamRequest(): OFF request");
       frontCamOffByUser = HIGH;
       frontCamOff();
     }
@@ -107,38 +106,48 @@ void handleFrontCamRequest() {
 void handleAutomaticFrontCamTrigger() {
   //if camear is off, parktronic indicator is on, reverse gear is off, user did not force turned it off
   if(parktronicState == HIGH && reverseSignalState == LOW && frontCamState == LOW && frontCamOffByUser == LOW) {
-    Serial.println("Automatic trigger: FrontCam ON request");
+    Serial.println("handleAutomaticFrontCamTrigger(): ON request");
     frontCamOn();
   }
   if(parktronicState == HIGH && reverseSignalState == HIGH && frontCamState == HIGH) {
-    Serial.println("Automatic trigger: FrontCam OFF request");
+    Serial.println("handleAutomaticFrontCamTrigger(): OFF request");
     frontCamOff();
   }
 }
 
 void frontCamOn() {
-   Serial.println("FrontCam: turning ON");
+   Serial.println("frontCamOn(): ON");
    frontCamState = HIGH;
    frontCamRelayState = HIGH;
    frontCamIndicatorState = HIGH;
+   forceParktronicOn();
 }
 
 void frontCamOff() {
-  Serial.println("FrontCam: turning OFF");
+  Serial.println("frontCamOff(): OFF");
   frontCamState = LOW;
   frontCamIndicatorState = LOW;
   frontCamRelayState = LOW;
 }
 
-void handleForceParktronicOn() {
-  if(parktronicState == LOW && frontCamState == HIGH)
+void forceParktronicOn() {
+  if(parktronicState == LOW)
   {
-    Serial.println("Parktronic Handler: Parktronic ON request");
+    Serial.println("forceParktronicOn(): Parktronic ON request");
     digitalWrite(parktronicButtonPin, HIGH);
     delay(parktronicButtonPressDuration);
     digitalWrite(parktronicButtonPin, LOW);
   }
-  //TODO needs a sanity check to avoid infinite loop if button pressed at high speed of the vehicle
+  
+  checkInputPinStates();
+  
+  if(parktronicState == HIGH) {
+    Serial.println("forceParktronicOn(): Parktronic ON successfully");
+  }
+  else
+  {
+    Serial.println("forceParktronicOn(): Parktronic is stayed OFF");
+  }
 }
 
 void handleFrontCamOffByUser() {
@@ -158,6 +167,6 @@ void updateFrontCamIndicatorPin() {
 
 void toggleFrontCamRequest() {
   frontCamRequest = frontCamRequest ? LOW : HIGH;
-  Serial.print("FrontCam button: FrontCam requested state: ");
+  Serial.print("toggleFrontCamRequest(): FrontCam requested state: ");
   Serial.println(frontCamRequest);
 }
