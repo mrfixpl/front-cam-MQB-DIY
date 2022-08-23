@@ -43,8 +43,13 @@ Adding Front Camera functionality to the vehicle, using universal 3rd party came
 * preparation for OneButton library
 * variable typo fix
 
+### `v0.4`
+* OneButton library implementation
+* Logging over Serial
+* Single attempt to force turn on Parktronic if requested by the Front Cam button
+
 ## Future Concept
-* Implement OneButton library: https://github.com/mathertel/OneButton
+* Some cool feature for long-press event of the button, maybe?
 
 ## Reference and credits
 * https://github.com/mathertel/OneButton
