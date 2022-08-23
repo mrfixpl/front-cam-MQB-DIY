@@ -60,7 +60,7 @@ void loop() {
 
   handleFrontCamButton();
   handleAutomaticFrontCamTrigger();
-  handleForceParektronicOn();
+  handleForceParktronicOn();
   handleFrontCamOffByUser();
   
   updateFrontCamRelayPin();
@@ -84,8 +84,9 @@ void handleFrontCamButton() {
   {
     if(frontCamButtonState == frontCamButtonEvent)
     {
-      if (frontCamButtonState == LOW)
+      if (frontCamState == LOW)
       {
+        frontCamOffByUser = LOW;
         frontCamOn();
       }
       else
@@ -99,7 +100,7 @@ void handleFrontCamButton() {
 }
 
 void handleAutomaticFrontCamTrigger() {
-  //if parktronic indicator is on and reverse gear is off, turn on front camera
+  //if parktronic indicator is on, and reverse gear is off, and u turn on front camera
   if(parktronicState == HIGH && reverseSignalState == LOW && frontCamState == LOW && frontCamOffByUser == LOW) {
     frontCamOn();
   }
@@ -120,7 +121,7 @@ void frontCamOff() {
   frontCamRelayState = LOW;
 }
 
-void handleForceParektronicOn() {
+void handleForceParktronicOn() {
   if(parktronicState == LOW && frontCamState == HIGH)
   {
     digitalWrite(parktronicButtonPin, HIGH);
