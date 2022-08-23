@@ -1,4 +1,4 @@
-/* Front Camera Controller for MQB Golf MK7 v0.3 by mr-fix
+/* Front Camera Controller for MQB Golf MK7 by mr-fix
  * Requires RVC-High to be installed and working in the vehicle
  * https://github.com/mrfixpl/front-cam-MQB-DIY
  * NOT FOR COMMERCIAL USE
@@ -12,10 +12,11 @@
  * 
  */
 
-/* constants */
 #include <Arduino.h>
 #include <OneButton.h>
 
+/* constants */
+const String softwareIdentification = "Front Camera Controller for MQB Golf MK7 v0.3 by mr-fix";
 const int frontCamButtonPin = 2; // custom button to trigger Front Camera
 const int frontCamIndicatorPin = 3; // custom indicator to show state of relay
 const int frontCamRelayPin = 4; // relay to control video feed
@@ -39,6 +40,11 @@ const int parktronicButtonPressDuration = 100; //how long press the parktronic b
 // TODO? frontCamIndicatorPin might need PWM control for brightness adjustment
 
 void setup() {
+  //for development purposes
+  pinMode(LED_BUILTIN, OUTPUT);
+  Serial.begin(115200);
+  Serial.println(softwareIdentification);
+  
   // outputs
   pinMode(frontCamIndicatorPin, OUTPUT);
   pinMode(frontCamRelayPin, OUTPUT);
@@ -48,9 +54,6 @@ void setup() {
   pinMode(frontCamButtonPin, INPUT_PULLUP);
   pinMode(parktronicIndicatorPin, INPUT);
   pinMode(reverseSignalPin, INPUT);
-
-  //for development purposes
-  pinMode(LED_BUILTIN, OUTPUT); 
 
   setInitialStates();
 }
@@ -68,6 +71,7 @@ void loop() {
 }
 
 void setInitialStates() {
+  Serial.println("Setting initial states of output pins...");
   digitalWrite(frontCamIndicatorPin, LOW);
   digitalWrite(frontCamRelayPin, LOW);
   digitalWrite(parktronicButtonPin, LOW);
@@ -86,11 +90,13 @@ void handleFrontCamButton() {
     {
       if (frontCamState == LOW)
       {
+        Serial.println("FrontCam Button: FrontCam ON request");
         frontCamOffByUser = LOW;
         frontCamOn();
       }
       else
       {
+        Serial.println("FrontCam button: FrontCam OFF request");
         frontCamOffByUser = HIGH;
         frontCamOff();
       }
@@ -102,20 +108,24 @@ void handleFrontCamButton() {
 void handleAutomaticFrontCamTrigger() {
   //if camear is off, parktronic indicator is on, reverse gear is off, user did not force turned it off
   if(parktronicState == HIGH && reverseSignalState == LOW && frontCamState == LOW && frontCamOffByUser == LOW) {
+    Serial.println("Automatic trigger: FrontCam ON request");
     frontCamOn();
   }
   if(parktronicState == HIGH && reverseSignalState == HIGH && frontCamState == HIGH) {
+    Serial.println("Automatic trigger: FrontCam OFF request");
     frontCamOff();
   }
 }
 
 void frontCamOn() {
+   Serial.println("FrontCam: turning ON");
    frontCamState = HIGH;
    frontCamRelayState = HIGH;
    frontCamIndicatorState = HIGH;
 }
 
 void frontCamOff() {
+  Serial.println("FrontCam: turning OFF");
   frontCamState = LOW;
   frontCamIndicatorState = LOW;
   frontCamRelayState = LOW;
@@ -124,10 +134,12 @@ void frontCamOff() {
 void handleForceParktronicOn() {
   if(parktronicState == LOW && frontCamState == HIGH)
   {
+    Serial.println("FrontCam button: Parktronic ON request");
     digitalWrite(parktronicButtonPin, HIGH);
     delay(parktronicButtonPressDuration);
     digitalWrite(parktronicButtonPin, LOW);
   }
+  //TODO needs a sanity check to avoid infinite loop if button pressed at high speed of the vehicle
 }
 
 void handleFrontCamOffByUser() {
