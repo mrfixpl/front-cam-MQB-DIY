@@ -16,7 +16,7 @@
 #include <OneButton.h>
 
 /* constants */
-const String softwareIdentification = "Front Camera Controller for MQB Golf MK7 v0.3 by mr-fix";
+const String softwareIdentification = "Front Camera Controller for MQB Golf MK7 v0.4 by mr-fix";
 #define FRONT_CAM_BUTTON_PIN 2 // custom button to trigger Front Camera
 const int frontCamIndicatorPin = 3; // custom indicator to show state of relay
 const int frontCamRelayPin = 4; // relay to control video feed
@@ -42,6 +42,7 @@ void setup() {
   //for development purposes
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(115200);
+  Serial.println("");
   Serial.println(softwareIdentification);
   
   // outputs
@@ -132,7 +133,7 @@ void frontCamOff() {
 void handleForceParktronicOn() {
   if(parktronicState == LOW && frontCamState == HIGH)
   {
-    Serial.println("FrontCam button: Parktronic ON request");
+    Serial.println("Parktronic Handler: Parktronic ON request");
     digitalWrite(parktronicButtonPin, HIGH);
     delay(parktronicButtonPressDuration);
     digitalWrite(parktronicButtonPin, LOW);
