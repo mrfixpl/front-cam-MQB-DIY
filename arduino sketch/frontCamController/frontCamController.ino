@@ -3,7 +3,7 @@
  * https://github.com/mrfixpl/front-cam-MQB-DIY
  * NOT FOR COMMERCIAL USE
  * 
- * Good luck!
+ * https://github.com/mathertel/OneButton library was used. And the library is awesome!
  * 
  * Might be cool to use WS2812 as the indicator and dynamicly control the color of the button.
  * not sure what's the actual function RGB light here, but still would be cool
@@ -17,7 +17,7 @@
 
 /* constants */
 const String softwareIdentification = "Front Camera Controller for MQB Golf MK7 v0.3 by mr-fix";
-const int frontCamButtonPin = 2; // custom button to trigger Front Camera
+#define FRONT_CAM_BUTTON_PIN 2 // custom button to trigger Front Camera
 const int frontCamIndicatorPin = 3; // custom indicator to show state of relay
 const int frontCamRelayPin = 4; // relay to control video feed
 const int parktronicButtonPin = 5; // OEM Parktronic button - planning to use this as output to trigger parktronic system, when front cam button is pressed but RVC is off
@@ -26,8 +26,7 @@ const int reverseSignalPin = 7; //reverse gear engaged signal
 
 /* variables */
 boolean frontCamState = LOW;
-boolean frontCamButtonState = LOW;
-boolean frontCamButtonStateOld = LOW;
+boolean frontCamRequest = LOW;
 boolean frontCamIndicatorState = LOW;
 boolean frontCamRelayState = LOW;
 boolean parktronicState = LOW;
@@ -35,7 +34,7 @@ boolean reverseSignalState = LOW;
 boolean frontCamOffByUser = LOW;
 
 /* settings */
-const boolean frontCamButtonEvent = LOW; // LOW for "on press", HIGH for "on release"
+OneButton frontCamButton = OneButton(FRONT_CAM_BUTTON_PIN,true,true); // I/O pin, LOW state when active, internal pull-up
 const int parktronicButtonPressDuration = 100; //how long press the parktronic button to force start the system
 // TODO? frontCamIndicatorPin might need PWM control for brightness adjustment
 
@@ -49,19 +48,23 @@ void setup() {
   pinMode(frontCamIndicatorPin, OUTPUT);
   pinMode(frontCamRelayPin, OUTPUT);
   pinMode(parktronicButtonPin, OUTPUT);
+  setInitialStates();
   
   // inputs
-  pinMode(frontCamButtonPin, INPUT_PULLUP);
   pinMode(parktronicIndicatorPin, INPUT);
   pinMode(reverseSignalPin, INPUT);
 
-  setInitialStates();
+  //events
+  frontCamButton.attachClick(toggleFrontCamRequest);
+  //frontCamButton.attachLongPressStart([]() {Serial.println("New button long-pressing!");});
+  //frontCamButton.attachLongPressStop([]() {Serial.println("New button long-pressing stopped!");});
 }
 
 void loop() {
   checkInputPinStates();
+  frontCamButton.tick();
 
-  handleFrontCamButton();
+  handleFrontCamRequest();
   handleAutomaticFrontCamTrigger();
   handleForceParktronicOn();
   handleFrontCamOffByUser();
@@ -78,30 +81,25 @@ void setInitialStates() {
 }
 
 void checkInputPinStates() {
-  frontCamButtonState = digitalRead(frontCamButtonPin);
   parktronicState = digitalRead(parktronicIndicatorPin);
   reverseSignalState = digitalRead(reverseSignalPin);
 }
 
-void handleFrontCamButton() {
-  if(frontCamButtonState != frontCamButtonStateOld)
+void handleFrontCamRequest() {
+  if(frontCamRequest != frontCamState)
   {
-    if(frontCamButtonState == frontCamButtonEvent)
+    if(frontCamRequest == HIGH)
     {
-      if (frontCamState == LOW)
-      {
-        Serial.println("FrontCam Button: FrontCam ON request");
-        frontCamOffByUser = LOW;
-        frontCamOn();
-      }
-      else
-      {
-        Serial.println("FrontCam button: FrontCam OFF request");
-        frontCamOffByUser = HIGH;
-        frontCamOff();
-      }
+      Serial.println("FrontCam button: FrontCam ON request");
+      frontCamOffByUser = LOW;
+      frontCamOn();
     }
-    frontCamButtonStateOld = frontCamButtonState;
+    else
+    {
+      Serial.println("FrontCam button: FrontCam OFF request");
+      frontCamOffByUser = HIGH;
+      frontCamOff();
+    }
   }
 }
 
@@ -155,4 +153,10 @@ void updateFrontCamRelayPin() {
 void updateFrontCamIndicatorPin() {
   digitalWrite(frontCamIndicatorPin, frontCamIndicatorState);
   digitalWrite(LED_BUILTIN, frontCamIndicatorState);
+}
+
+void toggleFrontCamRequest() {
+  frontCamRequest = frontCamRequest ? LOW : HIGH;
+  Serial.print("FrontCam button: FrontCam requested state: ");
+  Serial.println(frontCamRequest);
 }
