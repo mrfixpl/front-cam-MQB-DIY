@@ -37,6 +37,12 @@ Adding Front Camera functionality to the vehicle, using universal 3rd party came
 ### `v0.2`
 * memory of the FrontCam being switched of my user, reset after turning parktronic off.
 
+### `v0.3`
+* button detection fix
+* sanity check for forced off function
+* preparation for OneButton library
+* variable typo fix
+
 ## Future Concept
 * Implement OneButton library: https://github.com/mathertel/OneButton
 

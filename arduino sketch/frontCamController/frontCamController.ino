@@ -1,4 +1,4 @@
-/* Front Camera Controller for MQB Golf MK7 v0.1 by mr-fix
+/* Front Camera Controller for MQB Golf MK7 v0.3 by mr-fix
  * Requires RVC-High to be installed and working in the vehicle
  * https://github.com/mrfixpl/front-cam-MQB-DIY
  * NOT FOR COMMERCIAL USE
@@ -100,7 +100,7 @@ void handleFrontCamButton() {
 }
 
 void handleAutomaticFrontCamTrigger() {
-  //if parktronic indicator is on, and reverse gear is off, and u turn on front camera
+  //if camear is off, parktronic indicator is on, reverse gear is off, user did not force turned it off
   if(parktronicState == HIGH && reverseSignalState == LOW && frontCamState == LOW && frontCamOffByUser == LOW) {
     frontCamOn();
   }
