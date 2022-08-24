@@ -12,15 +12,15 @@
  *
  */
 
-#include <Arduino.h>
-#include <OneButton.h>
+#include <Arduino.h> // required for Arduino-specific support
+#include <OneButton.h> // library to handle button events
 
 /* constants */
 const String softwareIdentification = "Front Camera Controller for MQB Golf MK7 v0.4 by mr-fix";
-#define FRONT_CAM_BUTTON_PIN 2 // custom button to trigger Front Camera
-const int frontCamIndicatorPin = 3; // custom indicator to show state of relay
-const int frontCamRelayPin = 4; // relay to control video feed
-const int parktronicButtonPin = 5; // OEM Parktronic button - planning to use this as output to trigger parktronic system, when front cam button is pressed but RVC is off
+const int frontCamButtonPin = 2; // custom button to trigger Front Camera
+const int frontCamIndicatorPin = 3; // custom indicator for Front Camera state, should use PWM for brightness control
+const int frontCamRelayPin = 4; // relay to control video feed, LOW for RVC, HIGH for Front Camera
+const int parktronicButtonPin = 5; // OEM Parktronic button, to trigger parktronic system when front cam button is pressed but RVC is off
 const int parktronicIndicatorPin = 6; // OEM Parktronic indicator
 const int reverseSignalPin = 7; //reverse gear engaged signal
 
@@ -34,7 +34,7 @@ boolean reverseSignalState = LOW;
 boolean frontCamOffByUser = LOW;
 
 /* settings */
-OneButton frontCamButton = OneButton(FRONT_CAM_BUTTON_PIN,true,true); // I/O pin, LOW state when active, internal pull-up
+OneButton frontCamButton = OneButton(frontCamButtonPin,true,true); // pin, LOW state when active, internal pull-up
 const int parktronicButtonPressDuration = 100; //how long press the parktronic button to force start the system
 // TODO? frontCamIndicatorPin might need PWM control for brightness adjustment
 
@@ -57,8 +57,9 @@ void setup() {
 
   //events
   frontCamButton.attachClick(toggleFrontCamRequest);
-  //frontCamButton.attachLongPressStart([]() {Serial.println("New button long-pressing!");});
-  //frontCamButton.attachLongPressStop([]() {Serial.println("New button long-pressing stopped!");});
+  //frontCamButton.attachLongPressStart(longPressFunction); //devel
+  //frontCamButton.attachLongPressStop(longPressReleaseFunction); //devel
+  //frontCamButton.attachDuringLongPress(lonPressContinuesFunction); //devel
 }
 
 void loop() {
