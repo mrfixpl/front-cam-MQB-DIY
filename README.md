@@ -10,7 +10,7 @@ Adding Front Camera functionality to the vehicle, using universal 3rd party came
 
 ## Parts
 * Front camera in NTSC system
-* * Option 1: ~~https://s.click.aliexpress.com/e/_DkfmwDZ (not recommended: 110° FOV instead of advertised 170°)~~
+* * Option 1: ~~https://s.click.aliexpress.com/e/_DkfmwDZ ~~(not recommended: 110° FOV instead of advertised 170°)
 * * Option 2: https://s.click.aliexpress.com/e/_DFbM4L5 (waiting for test)
 * ATTiny board - https://www.aliexpress.com/item/1005001621891306.html
 * Relay: https://s.click.aliexpress.com/e/_Ddmhov9
