@@ -11,7 +11,8 @@ Adding Front Camera functionality to the vehicle, using universal 3rd party came
 ## Parts
 * Front camera in NTSC system
 * * Option 1: ~~https://s.click.aliexpress.com/e/_DkfmwDZ on AliExpress~~ (not recommended: 110° FOV instead of advertised 170°)
-* * Option 2: https://s.click.aliexpress.com/e/_DFbM4L5 (waiting for test)
+* * Option 2: https://s.click.aliexpress.com/e/_DFbM4L5 (not tested, but nice mounting)
+* * Option 3: https://s.click.aliexpress.com/e/_DBfOR7t (winner! great PoV and light compensation)
 * ATTiny board - https://www.aliexpress.com/item/1005001621891306.html
 * Relay: https://s.click.aliexpress.com/e/_Ddmhov9
 * Wires, shrinking tubes, etc...
@@ -21,12 +22,13 @@ Adding Front Camera functionality to the vehicle, using universal 3rd party came
 * OneButton library - https://github.com/mathertel/OneButton
 
 ## Installation
-* Tapping into OEM buttons signals
-* Enabling empty button
-* Tapping into reverse gear signal
-* Installing FrontCam
-* Modifying OEM wiring by adding video feed switching relay
-* Powering the controller with term_15
+* Creating a relay that will switch between rear and front signal,
+* Modifying OEM wiring by adding video feed switching relay - https://youtu.be/ypj4om6XKyw,
+* Tapping into OEM buttons signals,
+* Enabling empty button,
+* Tapping into reverse gear signal,
+* Installing FrontCam,
+* Powering the controller with term_15.
 
 ## Changelog
 ### `v0.1`
